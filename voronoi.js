@@ -1,21 +1,14 @@
 var fs = require('fs');
-var d3 = require('d3');
-var jsdom = require('../../my_node_modules/node-jsdom/lib/jsdom.js');
 var svg_to_png = require('svg-to-png');
 
+eval(fs.readFileSync('style.js', 'utf8'));
+eval(fs.readFileSync('colorbrewer.js', 'utf8'));
+eval(fs.readFileSync('ntc.js', 'utf8'));
 
-// fuck Node.js
-try {
-    eval(fs.readFileSync('../src/js/style.js', 'utf8'));
-    eval(fs.readFileSync('../src/js/colorbrewer.js', 'utf8'));
-    eval(fs.readFileSync('../src/js/ntc.js', 'utf8'));
 
-} catch(myError) {
-    eval(fs.readFileSync('./src/js/style.js', 'utf8'));
-    eval(fs.readFileSync('./src/js/colorbrewer.js', 'utf8'));
-    eval(fs.readFileSync('./src/js/ntc.js', 'utf8'));
+const D3Node = require('d3-node')
+const d3n = new D3Node()      // initializes D3 with container element
 
-}
 
 var swatches = [Blues, Greens, Greys, Oranges, Purples, Reds, BuGn, BuPu, GnBu, OrRd, PuBu, PuBuGn, PuRd, RdPu, YlGn, YlGnBu, YlOrBr, YlOrRd, BrBG, PiYG, PRGn, PuOr, RdBu, RdGy, RdYlBu, RdYlGn, Spectral,Paired, Set3 ];
 
@@ -73,24 +66,36 @@ if ( Math.floor(Math.random() * (2)) == 0  ) {
 	}
 
 
-var document = jsdom.jsdom();
 
 
 
-var height = 1024;
-var width = 1024;
+
+var height = 800;
+var width = 1100;
+
+
+var svg = d3n.createSVG(height,width)
+
+    svg.append('g') // create SVG w/ 'g' tag and width/height
+
+
+const d3 = d3n.d3;
+
+/*var svg = d3n.svgString() // output: <svg width=10 heig
 
 var svg = d3.select(document.body).append('svg')
     .attr('xmlns', 'http://www.w3.org/2000/svg')
         .attr('height', height)
     .attr('width', width);
-
+*/
 var style = getStyle(linkStrokeColor, linkStrokeOpacity, polygonFillColor, polygonStrokeColor, polygonStrokeWidth, sitesFillColor, sitesStrokeColor, sitesFillOpacity, sitesStrokeOpacity);
 
 
 
 svg.append('style').text(style);
-var cellNo = Math.floor(Math.random() * 1000 ) +  10;
+//var cellNo = Math.floor(Math.random() * 1000 ) +  10;
+
+var cellNo = 180; 
 
 var description = "A voronoi tessellation, consisting of " + cellNo +  " cells, drawn upon a " + getColorDescription(polygonFillColor) + " field. The cell borders are drawn in a " + getColorDescription(polygonStrokeColor) + " stroke." + linksDescription;
 
@@ -167,3 +172,5 @@ svg_to_png.convert("/tmp/foo1.svg", "/tmp/") // async, returns promise
 
 
 
+
+console.log(d3n.svgString())
