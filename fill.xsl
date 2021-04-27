@@ -1,6 +1,7 @@
 <xsl:stylesheet	
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns="http://www.w3.org/2000/svg"
     version="1.0">	
   <xsl:output		method="xml"/>
   <xsl:template match="node() | @*">
@@ -28,11 +29,18 @@
   </xsl:template>
 
 
+  <xsl:template match="svg:style">
+    <style>
+      <xsl:value-of select="document('./style.xml')"/>
+    </style>
+  </xsl:template>
+  
   <xsl:template match="svg:path">
     <xsl:variable name="i" select="position()" />
     <xsl:copy>
       <xsl:apply-templates select="node() | @*"/>
-       <xsl:attribute name="class"> <xsl:value-of select="concat('fill00', $i mod 10)"/></xsl:attribute>
+      <xsl:attribute name="class"> <xsl:value-of select="concat('fill', $i mod 48)"/></xsl:attribute>
+             <xsl:attribute name="id"> <xsl:value-of select="concat('mypath', $i)"/></xsl:attribute>
     </xsl:copy>
   </xsl:template>
     
