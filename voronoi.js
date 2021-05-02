@@ -70,8 +70,8 @@ if ( Math.floor(Math.random() * (2)) == 0  ) {
 
 
 
-var height = 800;
-var width = 1100;
+var height = 594;
+var width = 840;
 
 
 var svg = d3n.createSVG(height,width)
@@ -81,19 +81,12 @@ var svg = d3n.createSVG(height,width)
 
 const d3 = d3n.d3;
 
-/*var svg = d3n.svgString() // output: <svg width=10 heig
-
-var svg = d3.select(document.body).append('svg')
-    .attr('xmlns', 'http://www.w3.org/2000/svg')
-        .attr('height', height)
-    .attr('width', width);
-*/
 var style = getStyle(linkStrokeColor, linkStrokeOpacity, polygonFillColor, polygonStrokeColor, polygonStrokeWidth, sitesFillColor, sitesStrokeColor, sitesFillOpacity, sitesStrokeOpacity);
 
 
 
 svg.append('style').text(style);
-//var cellNo = Math.floor(Math.random() * 1000 ) +  10;
+
 
 var cellNo = 180; 
 
@@ -106,6 +99,12 @@ var sites = d3.range(cellNo)
 var voronoi = d3.voronoi()
     .extent([[-1, -1], [width + 1, height + 1]]);
 
+
+/*
+console.log(voronoi.polygons(sites));
+console.log(voronoi.links(sites));
+console.log(sites);
+*/
 var polygon = svg.append("g")
     .attr("class", "polygons")
   .selectAll("path")
@@ -148,6 +147,101 @@ function redrawSite(site) {
 	.attr("cy", function(d) { return d[1]; });
 }
 
+//coloring partitions
+var links =  voronoi.links(sites);
+var processed = new Array(sites.length);
+var adjList = new Array(sites.length);
+var colorGroups = new Array(sites.length);
+
+
+console.log(voronoi.links(sites).length + " ----- " + voronoi.polygons(sites).length);
+
+
+adjList.fill(-1);
+colorGroups.fill(-1);
+//  वहगत् ूप ो्रोमालमब तगेू
+// BUILD THE ADJACENCY LIST
+
+for (i = 0; i < sites.length; i++) {
+    var site = sites[i];
+
+    for (j = 0; j <links.length; j++) {
+	if ( site == (links[j].source)) {
+	    if (adjList[i] == -1) {
+		adjList[i] = new Array();
+	    }
+
+	    adjList[i].push(links[j].target);
+	}
+    }
+}
+
+
+
+// group non-adacent sites/nodes/vertices
+
+var colorGroupId = 0;
+var edges = new Array();
+var connectedNodes = new Array();
+
+for (i = 0; i < sites.length; i++) {
+    if (colorGroups[i]==-1) {
+	colorGroupId++;
+	colorGroups[i]=colorGroupId;
+
+	var site = sites[i];
+
+	
+	for(var n = 0; n < adjList[i].length; n++) {
+	    edges[n] = adjList[i][n]; 
+	}
+
+	for (j = 0; j < sites.length; j++) {
+	    
+	    if (j != i && colorGroups[j] == -1) {
+
+		// is an edge of any sites seen so far
+		var uncoloredSite = sites[j];
+
+		// check to see if this as-of-yet uncolored site is
+		// connected to sites in the current color group
+		var isConnectedToColorGroup = false;
+		for (k = 0; k < edges.length; k++) {
+		    if(uncoloredSite == edges[k]) {
+			isConnectedToColorGroup=true;
+	//		console.log(site + " and " + uncoloredSite + " are connected."); 
+		    }
+		}
+	/*	if (isConnectedToColorGroup) {
+		    console.log(j + " IS CONNECTED TO GROUP " + colorGroupId);
+		    connectedNodes.push(j);
+		}
+*/		
+		if (!isConnectedToColorGroup) {
+		       console.log("adding nodes for" + i);
+			// add this unconnected site to the current color group
+			colorGroups[j]=colorGroupId;
+			// get this new site's adjacent vertices to the "edge"
+			// list in order to make sure 
+			for(l=0; l < adjList[j].length; l++) {
+			    edges.push(adjList[j][l]);
+			}
+		}
+		
+
+	    }
+
+	}
+
+    }
+
+}
+
+
+
+for (var i = 0; i <colorGroups.length; i++) {
+    console.log(colorGroups[i]);
+}
 
 
 
@@ -164,13 +258,8 @@ fs.writeFile("/tmp/foo1.svg", svg.node().outerHTML, function(err) {
 
 
 
-svg_to_png.convert("/tmp/foo1.svg", "/tmp/") // async, returns promise 
-    .then( function(){
-	    console.log(description.substr(0, 420));
-	});
 
 
 
 
-
-console.log(d3n.svgString())
+// console.log(d3n.svgString())
