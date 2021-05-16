@@ -88,13 +88,29 @@ var style = getStyle(linkStrokeColor, linkStrokeOpacity, polygonFillColor, polyg
 svg.append('style').text(style);
 
 
-var cellNo = 180; 
+var cellNo = 10; 
 
 var description = "A voronoi tessellation, consisting of " + cellNo +  " cells, drawn upon a " + getColorDescription(polygonFillColor) + " field. The cell borders are drawn in a " + getColorDescription(polygonStrokeColor) + " stroke." + linksDescription;
 
 
 var sites = d3.range(cellNo)
     .map(function(d) { return [Math.random() * width, Math.random() * height]; });
+
+
+var test_sites = [
+  [ 630.8595602048953, 510.33697385158604 ],
+  [ 730.2801760670303, 479.19585434192595 ],
+  [ 390.14775487422423, 413.27429799546627 ],
+  [ 807.5905665163081, 94.70238667837747 ],
+  [ 71.01538985563799, 278.18564832326115 ],
+  [ 250.20764719769087, 190.77187716549125 ],
+  [ 605.7404646536893, 230.06084932543465 ],
+  [ 162.92975522845606, 476.7370246852805 ],
+  [ 641.4883050641192, 310.99555562317454 ],
+  [ 119.18467534622178, 580.3487864531318 ]
+];
+
+sites = test_sites;
 
 var voronoi = d3.voronoi()
     .extent([[-1, -1], [width + 1, height + 1]]);
@@ -154,7 +170,9 @@ var adjList = new Array(sites.length);
 var colorGroups = new Array(sites.length);
 
 
-console.log(voronoi.links(sites).length + " ----- " + voronoi.polygons(sites).length);
+
+console.log(sites);
+console.log(links);
 
 
 adjList.fill(-1);
@@ -209,16 +227,14 @@ for (i = 0; i < sites.length; i++) {
 		for (k = 0; k < edges.length; k++) {
 		    if(uncoloredSite == edges[k]) {
 			isConnectedToColorGroup=true;
-	//		console.log(site + " and " + uncoloredSite + " are connected."); 
 		    }
 		}
-	/*	if (isConnectedToColorGroup) {
-		    console.log(j + " IS CONNECTED TO GROUP " + colorGroupId);
-		    connectedNodes.push(j);
-		}
-*/		
+
+
+		// we should now know if this node is connected
+		// ...if it is NOT connected then...
 		if (!isConnectedToColorGroup) {
-		       console.log("adding nodes for" + i);
+		      
 			// add this unconnected site to the current color group
 			colorGroups[j]=colorGroupId;
 			// get this new site's adjacent vertices to the "edge"
