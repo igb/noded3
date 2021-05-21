@@ -254,12 +254,19 @@ for (i = 0; i < sites.length; i++) {
 }
 
 
-
+var colorGroupsXml = "<color-groups>\n";
 for (var i = 0; i <colorGroups.length; i++) {
     console.log(colorGroups[i]);
+    colorGroupsXml += "\t<group>" + colorGroups[i] + "</group>\n"
 }
+colorGroupsXml += "</color-groups>\n"
 
-
+fs.writeFile("/tmp/groups.xml", colorGroupsXml, function(err) {
+	if(err) {
+	    return console.log(err);
+	}
+	
+    }); 
 
 
 
