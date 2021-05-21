@@ -90,7 +90,17 @@
 	  <xsl:attribute name="class"> <xsl:value-of select="concat('fill', $i mod 48)"/></xsl:attribute>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:attribute name="class"> <xsl:value-of select="concat('group', $i mod 12)"/></xsl:attribute>
+
+	  <xsl:for-each select="document('/tmp/groups.xml')/color-groups/group">
+	    <xsl:variable name="group_count"  select="position()"/>	
+			     <xsl:choose>
+			       <xsl:when test="$i = $group_count">			
+				 <xsl:attribute name="class">group<xsl:value-of select="current()"/></xsl:attribute>
+				</xsl:when>
+			     </xsl:choose>
+	  </xsl:for-each>
+	  
+
 	</xsl:otherwise>
       </xsl:choose>
           <xsl:attribute name="id"> <xsl:value-of select="concat('mypath', $i)"/></xsl:attribute>

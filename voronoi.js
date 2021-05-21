@@ -163,6 +163,9 @@ function redrawSite(site) {
 	.attr("cy", function(d) { return d[1]; });
 }
 
+
+
+
 //coloring partitions
 var links =  voronoi.links(sites);
 var processed = new Array(sites.length);
@@ -183,15 +186,25 @@ colorGroups.fill(-1);
 for (i = 0; i < sites.length; i++) {
     var site = sites[i];
 
-    for (j = 0; j <links.length; j++) {
-	if ( site == (links[j].source)) {
-	    if (adjList[i] == -1) {
-		adjList[i] = new Array();
-	    }
+    if (adjList[i] == -1) {
+	adjList[i] = new Array();
+    }
 
+    
+    for (j = 0; j <links.length; j++) {
+	if ( site == (links[j].source)) {	
 	    adjList[i].push(links[j].target);
+	} else if ( site == (links[j].target)) {
+	    adjList[i].push(links[j].source);
 	}
     }
+}
+
+
+// print out adjacency list
+
+for (var adji = 0; adji < adjList.length; adji++) {
+    console.log(adjList[adji]);
 }
 
 
