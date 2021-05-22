@@ -88,7 +88,7 @@ var style = getStyle(linkStrokeColor, linkStrokeOpacity, polygonFillColor, polyg
 svg.append('style').text(style);
 
 
-var cellNo = 10; 
+var cellNo = 100; 
 
 var description = "A voronoi tessellation, consisting of " + cellNo +  " cells, drawn upon a " + getColorDescription(polygonFillColor) + " field. The cell borders are drawn in a " + getColorDescription(polygonStrokeColor) + " stroke." + linksDescription;
 
@@ -110,7 +110,7 @@ var test_sites = [
   [ 119.18467534622178, 580.3487864531318 ]
 ];
 
-sites = test_sites;
+//sites = test_sites;
 
 var voronoi = d3.voronoi()
     .extent([[-1, -1], [width + 1, height + 1]]);
@@ -179,7 +179,7 @@ console.log(links);
 
 
 adjList.fill(-1);
-colorGroups.fill(-1);
+
 //  वहगत् ूप ो्रोमालमब तगेू
 // BUILD THE ADJACENCY LIST
 
@@ -204,66 +204,42 @@ for (i = 0; i < sites.length; i++) {
 // print out adjacency list
 
 for (var adji = 0; adji < adjList.length; adji++) {
+    console.log((adji + 1))
     console.log(adjList[adji]);
+    console.log();
+    console.log();
 }
 
 
 
 // group non-adacent sites/nodes/vertices
 
+//  initial setup:
+colorGroups.fill(-1);
 var colorGroupId = 0;
-var edges = new Array();
-var connectedNodes = new Array();
+//    loop over sites
+for (var i =0; i < sites.length; i++) {
 
-for (i = 0; i < sites.length; i++) {
-    if (colorGroups[i]==-1) {
+    //  If eites[i] does it have a group iD
+    if (colorGroups[i] == -1) {
+	//increment groupID
 	colorGroupId++;
-	colorGroups[i]=colorGroupId;
-
-	var site = sites[i];
-
-	
-	for(var n = 0; n < adjList[i].length; n++) {
-	    edges[n] = adjList[i][n]; 
-	}
-
-	for (j = 0; j < sites.length; j++) {
-	    
-	    if (j != i && colorGroups[j] == -1) {
-
-		// is an edge of any sites seen so far
-		var uncoloredSite = sites[j];
-
-		// check to see if this as-of-yet uncolored site is
-		// connected to sites in the current color group
-		var isConnectedToColorGroup = false;
-		for (k = 0; k < edges.length; k++) {
-		    if(uncoloredSite == edges[k]) {
-			isConnectedToColorGroup=true;
-		    }
+    // Create new array of length site to hold adjacent nodes
+	var adjacentNodes = [];
+	//Loop starting from first unground element until end of sites
+	for (var j = i; j < sites.length; j++) {
+	    //Skip if it has a group ID or if it is in the adjacent nodes list
+	    if (colorGroups[j] == -1 && !adjacentNodes.includes(sites[j])) {
+	    // Assign groupId to current element
+		colorGroups[j]=colorGroupId;
+		// Get adjacent Nodes and add to adjacent nodes list
+		for (var k = 0; k < adjList[j].length; k++) {
+		    adjacentNodes.push(adjList[j][k]);
 		}
-
-
-		// we should now know if this node is connected
-		// ...if it is NOT connected then...
-		if (!isConnectedToColorGroup) {
-		      
-			// add this unconnected site to the current color group
-			colorGroups[j]=colorGroupId;
-			// get this new site's adjacent vertices to the "edge"
-			// list in order to make sure 
-			for(l=0; l < adjList[j].length; l++) {
-			    edges.push(adjList[j][l]);
-			}
-		}
-		
-
 	    }
-
 	}
-
+    //done with color group X
     }
-
 }
 
 
