@@ -5,7 +5,7 @@
     version="1.0">	
 
 
-  <xsl:output method="xml"/>
+  <xsl:output method="text"/>
   <xsl:strip-space elements="*"/>
 
 
@@ -13,9 +13,8 @@
 
   
   <xsl:template match="/">
-    <xsl:for-each select="//color-groups/group[not(.=preceding::*)]">
-      <xsl:value-of select="."/>      
-    </xsl:for-each>
+    <xsl:for-each select="//color-groups/group[not(.=preceding::*)]">xsltproc --stringparam group group<xsl:value-of select="."/>  separations.xsl /tmp/foo1.xml  &gt; group<xsl:value-of select="."/>.xml<xsl:text>&#xa;</xsl:text> 
+</xsl:for-each>
     
     
   </xsl:template>
