@@ -13,7 +13,7 @@
 
   
   <xsl:template match="/">
-    <xsl:for-each select="//color-groups/group[not(.=preceding::*)]">xsltproc --stringparam group group<xsl:value-of select="."/>  separations.xsl /tmp/foo1.xml  &gt; group<xsl:value-of select="."/>.xml<xsl:text>&#xa;</xsl:text> 
+    <xsl:for-each select="//color-groups/group[not(.=preceding::*)]">xsltproc --stringparam group group<xsl:value-of select="."/>  separations.xsl /tmp/baz.svg  &gt; /tmp/group<xsl:value-of select="."/>.svg<xsl:text>&#xa;</xsl:text> 
 </xsl:for-each>
     
     

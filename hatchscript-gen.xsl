@@ -16,7 +16,7 @@
     
     xsltproc --stringparam hatchAngle  <xsl:value-of select="$j"/>  hatchscript-rotate.xsl   ~/Library/Application\ Support/org.inkscape.Inkscape/config/inkscape/preferences.xml > /tmp/preferences.xml;
 
-    cp /tmp/preferences.xml   ~/Library/Application\ Support/org.inkscape.Inkscape/config/inkscape/;
+    cp /tmp/preferences.xml   ~/Library/Application\ Support/org.inkscape.Inksckape/config/inkscape/;
 
 
     /Applications/Inkscape.app/Contents/MacOS/inkscape -g --select=<xsl:value-of select="@id"/> --verb "command.evilmadscientist.eggbot_hatch.noprefs; FileSave; FileQuit" /tmp/foo2.svg;
