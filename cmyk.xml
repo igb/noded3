@@ -1,0 +1,65 @@
+<colors>
+  <color name="cyan">
+    <c>100</c>
+    <m>0</m>
+    <y>0</y>
+    <k>0</k>
+  </color>
+  
+  <color name="magenta">
+    <c>0</c>
+    <m>100</m>
+    <y>0</y>
+    <k>0</k>
+  </color>
+
+  
+  <color name="yellow">
+    <c>0</c>
+    <m>0</m>
+    <y>100</y>
+    <k>0</k>
+  </color>
+
+  
+  <color name="black">
+    <c>0</c>
+    <m>0</m>
+    <y>0</y>
+    <k>100</k>
+  </color>
+
+  
+  <color name="orange">
+    <c>0</c>
+    <m>50</m>
+    <y>50</y>
+    <k>0</k>
+  </color>
+
+  
+  <color name="red">
+    <c>0</c>
+    <m>67</m>
+    <y>33</y>
+    <k>0</k>
+  </color>
+
+  
+  <color name="purple">
+    <c>33</c>
+    <m>67</m>
+    <y>0</y>
+    <k>0</k>
+  </color>
+
+  
+  <color name="blue">
+    <c>67</c>
+    <m>33</m>
+    <y>0</y>
+    <k>0</k>
+  </color>
+
+
+ </colors>  
