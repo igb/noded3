@@ -55,11 +55,34 @@
 
   
   <color name="blue">
+    <c>66</c>
+    <m>33</m>
+    <y>0</y>
+    <k>0</k>
+  </color>
+
+  <color name="green">
     <c>67</c>
     <m>33</m>
     <y>0</y>
     <k>0</k>
   </color>
+
+  <color name="brown">
+    <c>33</c>
+    <m>33</m>
+    <y>34</y>
+    <k>0</k>
+  </color>
+
+  
+  <color name="test">
+    <c>20</c>
+    <m>30</m>
+    <y>50</y>
+    <k>0</k>
+  </color>
+
 
 
  </colors>  
