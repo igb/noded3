@@ -57,33 +57,35 @@
 	<xsl:with-param name="color"><xsl:value-of select="$color"/></xsl:with-param>
 	<xsl:with-param name="cmyk">c</xsl:with-param>
 	<xsl:with-param name="step"><xsl:value-of select="$step"/></xsl:with-param>
-	<xsl:with-param name="unit"><xsl:value-of select="$c_unit"/></xsl:with-param>
-	<xsl:with-param name="angle">
-	  <xsl:call-template name="generate_separation">
-	    <xsl:with-param name="color"><xsl:value-of select="$color"/></xsl:with-param>
-	    <xsl:with-param name="cmyk">m</xsl:with-param>
-	    <xsl:with-param name="step"><xsl:value-of select="$step"/></xsl:with-param>
-	    <xsl:with-param name="unit"><xsl:value-of select="$m_unit"/></xsl:with-param>
-	    <xsl:with-param name="angle">	      
-	      <xsl:call-template name="generate_separation">
-		<xsl:with-param name="color"><xsl:value-of select="$color"/></xsl:with-param>
-		<xsl:with-param name="cmyk">y</xsl:with-param>
-		<xsl:with-param name="step"><xsl:value-of select="$step"/></xsl:with-param>
-		<xsl:with-param name="unit"><xsl:value-of select="$y_unit"/></xsl:with-param>
-		<xsl:with-param name="angle">
-		  <xsl:call-template name="generate_separation">
-		    <xsl:with-param name="color"><xsl:value-of select="$color"/></xsl:with-param>
-		    <xsl:with-param name="cmyk">k</xsl:with-param>
-		    <xsl:with-param name="step"><xsl:value-of select="$step"/></xsl:with-param>
-		    <xsl:with-param name="unit"><xsl:value-of select="$k_unit"/></xsl:with-param>
-		    <xsl:with-param name="angle"><xsl:value-of select="$init_angle"/></xsl:with-param>
-		  </xsl:call-template>	      
-		</xsl:with-param>
-	      </xsl:call-template>
-	    </xsl:with-param>
-	  </xsl:call-template>
-	</xsl:with-param>
+	<xsl:with-param name="unit"><xsl:value-of select="$c_unit * $step"/></xsl:with-param>
+	<xsl:with-param name="angle">0</xsl:with-param>
       </xsl:call-template>
+
+      
+      <xsl:call-template name="generate_separation">
+	<xsl:with-param name="color"><xsl:value-of select="$color"/></xsl:with-param>
+	<xsl:with-param name="cmyk">m</xsl:with-param>
+	<xsl:with-param name="step"><xsl:value-of select="$step"/></xsl:with-param>
+	<xsl:with-param name="unit"><xsl:value-of select="$m_unit * $step"/></xsl:with-param>
+	<xsl:with-param name="angle"><xsl:value-of select="$c_unit * $step"/></xsl:with-param>
+      </xsl:call-template>
+	      
+      <xsl:call-template name="generate_separation">
+	<xsl:with-param name="color"><xsl:value-of select="$color"/></xsl:with-param>
+	<xsl:with-param name="cmyk">y</xsl:with-param>
+	<xsl:with-param name="step"><xsl:value-of select="$step"/></xsl:with-param>
+	<xsl:with-param name="unit"><xsl:value-of select="$y_unit * $step"/></xsl:with-param>
+	<xsl:with-param name="angle"><xsl:value-of select="($c_unit + $m_unit) * $step"/></xsl:with-param>
+      </xsl:call-template>
+
+      <xsl:call-template name="generate_separation">
+	<xsl:with-param name="color"><xsl:value-of select="$color"/></xsl:with-param>
+	<xsl:with-param name="cmyk">k</xsl:with-param>
+	<xsl:with-param name="step"><xsl:value-of select="$step"/></xsl:with-param>
+	<xsl:with-param name="unit"><xsl:value-of select="$k_unit * $step"/></xsl:with-param>
+	<xsl:with-param name="angle"><xsl:value-of select="($c_unit + $m_unit + $y_unit) * $step"/></xsl:with-param>
+      </xsl:call-template>	      
+	
       
       
 <!--	</xsl:copy> -->
@@ -96,9 +98,8 @@
     <xsl:param name="step"/>
     <xsl:param name="unit"/>
     <xsl:param name="angle"/>
-    
-    <xsl:choose>
-      <xsl:when test="$unit &gt;  0">
+
+      <xsl:if test="$unit &gt;  0">
 	<xsl:value-of select="concat('xsltproc --stringparam hatchAngle ', $angle, ' hatchscript-rotate.xsl   ~/Library/Application\ Support/org.inkscape.Inkscape/config/inkscape/preferences.xml &gt; /tmp/preferences.xml;')"/>
 	<xsl:text>
 	</xsl:text>
@@ -117,11 +118,9 @@
 	  <xsl:with-param name="cmyk"><xsl:value-of select="$cmyk"/></xsl:with-param>
 	  <xsl:with-param name="step"><xsl:value-of select="$step"/></xsl:with-param>
 	  <xsl:with-param name="unit"><xsl:value-of select="$unit - $step"/></xsl:with-param>
-	  <xsl:with-param name="angle"><xsl:value-of select="$angle - $step"/></xsl:with-param>
+	  <xsl:with-param name="angle"><xsl:value-of select="$angle + $step"/></xsl:with-param>
 	</xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise><xsl:value-of select="$angle"/></xsl:otherwise>
-    </xsl:choose>	
+      </xsl:if>
   </xsl:template>
   
   
