@@ -21,13 +21,6 @@
     <k>0</k>
   </color>
 
-  
-  <color name="black">
-    <c>0</c>
-    <m>0</m>
-    <y>0</y>
-    <k>100</k>
-  </color>
 
   
   <color name="orange">
@@ -73,6 +66,14 @@
     <m>33</m>
     <y>34</y>
     <k>0</k>
+  </color>
+
+    
+  <color name="black">
+    <c>0</c>
+    <m>0</m>
+    <y>0</y>
+    <k>100</k>
   </color>
 
   

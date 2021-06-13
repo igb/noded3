@@ -21,7 +21,7 @@
 
   <xsl:template match="/">
     <xsl:for-each select="//color-groups/group[not(.=preceding::*)]">
-      <xsl:variable name="count"  select="."/><xsl:for-each select="document('cmyk.xml')//colors/color"><xsl:if test="$count = position()">xsltproc --stringparam color <xsl:value-of select="@name"/>  cmyk-sep-gen.xsl /tmp/group<xsl:value-of select="$count"/><xsl:text>&#xa;</xsl:text></xsl:if></xsl:for-each>
+      <xsl:variable name="count"  select="."/><xsl:for-each select="document('cmyk.xml')//colors/color"><xsl:if test="$count = position()">xsltproc --stringparam color <xsl:value-of select="@name"/>  --stringparam filename /tmp/group<xsl:value-of select="$count"/>.svg  cmyk-sep-gen.xsl cmyk.xml<xsl:text>&#xa;</xsl:text></xsl:if></xsl:for-each>
     </xsl:for-each>
 
   </xsl:template>

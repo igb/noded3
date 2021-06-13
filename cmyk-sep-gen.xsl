@@ -5,24 +5,19 @@
 
   <xsl:output method="text" indent="yes"/>
   <xsl:strip-space elements="*"/>
-
+  <xsl:param name="color" select="'color'"/>
+  <xsl:param name="filename" select="'filename'"/>
+  
 
 
   
   <xsl:template match="node() | @*">
-<!--   
-    <xsl:copy>	-->
-      <xsl:apply-templates select="node() | @*"/>
-<!--    </xsl:copy> -->
-
+      <xsl:apply-templates select="color"/>
   </xsl:template>	
 
   <xsl:template match="color">
+    <xsl:if test="$color = @name">
 
-<!--	<xsl:copy>
-      <xsl:copy-of select="@*"/> -->
-
-      
       <xsl:variable name="c"><xsl:value-of select="c"/></xsl:variable>
       <xsl:variable name="m"><xsl:value-of select="m"/></xsl:variable>
       <xsl:variable name="y"><xsl:value-of select="y"/></xsl:variable>
@@ -43,10 +38,6 @@
       <xsl:variable name="y_unit" select="((floor($y div 10)) * 10) div $unit"/>
       <xsl:variable name="k_unit" select="((floor($k div 10)) * 10) div $unit"/>
       
-<!--       <c><xsl:value-of select="$c_unit"/></c> -->
-<!--	   <m><xsl:value-of select="$m_unit"/></m> -->
-<!--	   <y><xsl:value-of select="$y_unit"/></y> -->
-<!--	   <k><xsl:value-of select="$k_unit"/></k> -->
 
       <xsl:variable name="step"  select="floor(180 div ($c_unit + $m_unit + $y_unit + $k_unit))"/>
       <xsl:variable name="init_angle" select="'180'"/>
@@ -87,8 +78,7 @@
       </xsl:call-template>	      
 	
       
-      
-<!--	</xsl:copy> -->
+    </xsl:if>
   </xsl:template>
 
   <xsl:template name="generate_separation">
@@ -106,7 +96,13 @@
 	<xsl:value-of select="string('cp /tmp/preferences.xml   ~/Library/Application\ Support/org.inkscape.Inkscape/config/inkscape/;')"/>
 	<xsl:text>
 	</xsl:text>
-	<xsl:value-of select="concat('/Applications/Inkscape.app/Contents/MacOS/inkscape -g --select=mypath2 --verb &quot;command.evilmadscientist.eggbot_hatch.noprefs; FileSave; FileQuit&quot; /tmp/',$color,'-',$cmyk, '-', $angle,'.svg;')"/>
+	<xsl:value-of select="concat('cp ', $filename,  ' /tmp/',$color,'-',$cmyk, '-', $angle,'.svg;')"/>
+	<xsl:text>
+	</xsl:text>
+	<xsl:value-of select="concat('/Applications/Inkscape.app/Contents/MacOS/inkscape -g  --verb &quot;command.evilmadscientist.eggbot_hatch.noprefs; FileSave; FileQuit&quot; /tmp/',$color,'-',$cmyk, '-', $angle,'.svg;')"/>
+	<xsl:text>
+	</xsl:text>
+	<xsl:value-of select="concat('xsltproc extract-fillpaths.xsl  /tmp/',$color,'-',$cmyk, '-', $angle,'.svg >  /tmp/hatch-',$color,'-',$cmyk, '-', $angle,'.svg;')"/>
 	<xsl:text>
 	</xsl:text>
 	<xsl:text>
