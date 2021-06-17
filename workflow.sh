@@ -15,6 +15,10 @@ shift $(( OPTIND - 1 ))
 
 #CLEANUP IN CASE
 rm /tmp/*.svg
+rm -rf /tmp/c
+rm -rf /tmp/m
+rm -rf /tmp/y
+rm -rf /tmp/k
 
 #GENERATE OG SVG WITH D3.js
 node voronoi.js
@@ -33,6 +37,12 @@ if $use_cmyk; then
     xsltproc cmyk-separations.xsl /tmp/groups.xml > /tmp/cmyk-gen.sh
     sh /tmp/cmyk-gen.sh > /tmp/cmyk.sh
     sh /tmp/cmyk.sh
+
+    mkdir /tmp/c /tmp/m /tmp/y /tmp/k
+    cp /tmp/hatch*-c-*.svg /tmp/c/
+    cp /tmp/hatch*-m-*.svg /tmp/m/
+    cp /tmp/hatch*-y-*.svg /tmp/y/
+    cp /tmp/hatch*-k-*.svg /tmp/k/
     
 else
 

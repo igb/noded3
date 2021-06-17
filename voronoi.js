@@ -170,12 +170,12 @@ function redrawSite(site) {
 var links =  voronoi.links(sites);
 var processed = new Array(sites.length);
 var adjList = new Array(sites.length);
-var colorGroups = new Array(sites.length);
 
 
 
-console.log(sites);
-console.log(links);
+
+//console.log(sites);
+//console.log(links);
 
 
 adjList.fill(-1);
@@ -201,51 +201,117 @@ for (i = 0; i < sites.length; i++) {
 }
 
 
-// print out adjacency list
 
-for (var adji = 0; adji < adjList.length; adji++) {
-    console.log((adji + 1))
-    console.log(adjList[adji]);
-    console.log();
-    console.log();
+//rotate array
+
+function rotate(myArray) {
+    myArray.reverse();
+    var i = 1;
+    var j = myArray.length - 1;
+
+    var swap;
+    
+    for (; i <= j; i++) {
+	for (; j >= i; j--) {
+	    swap = myArray[i];
+	    myArray[i] = myArray[j];
+	    myArray[j] = swap;
+	}
+    }
+
+    return myArray;
 }
-
 
 
 // group non-adacent sites/nodes/vertices
 
-//  initial setup:
-colorGroups.fill(-1);
-var colorGroupId = 0;
-//    loop over sites
-for (var i =0; i < sites.length; i++) {
+function getColorGroups(sites) {
 
-    //  If eites[i] does it have a group iD
-    if (colorGroups[i] == -1) {
-	//increment groupID
-	colorGroupId++;
-    // Create new array of length site to hold adjacent nodes
-	var adjacentNodes = [];
-	//Loop starting from first unground element until end of sites
-	for (var j = i; j < sites.length; j++) {
-	    //Skip if it has a group ID or if it is in the adjacent nodes list
-	    if (colorGroups[j] == -1 && !adjacentNodes.includes(sites[j])) {
-	    // Assign groupId to current element
-		colorGroups[j]=colorGroupId;
-		// Get adjacent Nodes and add to adjacent nodes list
-		for (var k = 0; k < adjList[j].length; k++) {
-		    adjacentNodes.push(adjList[j][k]);
+    var optimalColorGroups;
+
+    // 
+    for (var siteLoop = 0; siteLoop < sites.length; siteLoop++) {
+	sites = rotate(sites);
+	//  initial setup:
+	var colorGroups = new Array(sites.length);
+	
+	colorGroups.fill(-1);
+	var colorGroupId = 0;
+	//    loop over sites
+	for (var i =0; i < sites.length; i++) {
+	    
+	    //  If eites[i] does it have a group iD
+	    if (colorGroups[i] == -1) {
+		//increment groupID
+		colorGroupId++;
+		// Create new array of length site to hold adjacent nodes
+		var adjacentNodes = [];
+	    //Loop starting from first unground element until end of sites
+		for (var j = i; j < sites.length; j++) {
+		    //Skip if it has a group ID or if it is in the adjacent nodes list
+		    if (colorGroups[j] == -1 && !adjacentNodes.includes(sites[j])) {
+			// Assign groupId to current element
+			colorGroups[j]=colorGroupId;
+			// Get adjacent Nodes and add to adjacent nodes list
+			for (var k = 0; k < adjList[j].length; k++) {
+			    adjacentNodes.push(adjList[j][k]);
+			}
+		    }
+		}
+	    //done with color group X
+	    }
+	}
+	
+	
+
+
+	if (optimalColorGroups == null) {  // first time through the loop
+	    optimalColorGroups = colorGroups;
+	} else if ((new Set(optimalColorGroups)).length > (new Set(colorGroups)).length) { // if we found a grouping with less color groups use that
+	    optimalColorGroups = colorGroups;
+	} else if ((new Set(optimalColorGroups)).length == (new Set(colorGroups)).length) { // if the candidate grouping has the same number of groups...
+	    // let's score the distribution...
+	    var optimalColorGroupsScore = score(optimalColorGroups);
+	    var colorGroupsScore = score(colorGroups);
+
+	    if (optimalColorGroupsScore > colorGroupsScore) { 	    // lower the score the more even the distribution so we take the lower scored grouping...
+		optimalColorGroups = colorGroups;
+	    } else if (optimalColorGroupsScore == colorGroupsScore) { // if the scores are the same we look for the grouping with the largest smallest group
+		if (optimalColorGroups.reduce((x, y) => x > y ? y : x) < colorGroups.reduce((x, y) => x > y ? y : x)) {
+		    optimalColorGroups = colorGroups;
 		}
 	    }
 	}
-    //done with color group X
+   
     }
+
+    return optimalColorGroups;
+   
 }
 
+function score(colorGroups) {
+
+    
+    var groupSet = new Set(colorGroups);
+    var groupSizes = new Array(groupSet.size);
+    groupSizes.fill(0);
+    
+    for (var i =0; i < colorGroups.length; i++) {
+	groupSizes[colorGroups[i] - 1]++;
+    }
+
+    var expectedAverageDistribution = colorGroups.length / groupSet.size;
+    var deltasFromExpectedAverage = groupSizes.map((x) => Math.abs(x - expectedAverageDistribution));
+    var meanDelta = deltasFromExpectedAverage.reduce((x, y) => x + y, 0) / deltasFromExpectedAverage.length;
+
+    return meanDelta;  
+	
+}
+var colorGroups = getColorGroups(sites);
 
 var colorGroupsXml = "<color-groups>\n";
 for (var i = 0; i <colorGroups.length; i++) {
-    console.log(colorGroups[i]);
+  
     colorGroupsXml += "\t<group>" + colorGroups[i] + "</group>\n"
 }
 colorGroupsXml += "</color-groups>\n"
